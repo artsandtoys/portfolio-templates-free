@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>your portfolio</title>
+    <link rel="icon" href="your icon" type="image/png">
+
+<style>
+
+/* ANIMATION STYLE */
+html {
+    scroll-behavior: smooth;
+}
+
+/* GENERAL SETTINGS */
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+h1, h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* MAIN CONTAINER */
+.main-container {
+    width: 75%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-grow: 1;
+    padding-bottom: 50px;
+    align-items: flex-start;
+}
+
+/* LEFT COLUMN */
+.left-column {
+    flex-basis: 33.33%;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: sticky;
+    top: 0;
+    height: 90vh;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+
+.left-content {
+    width: 75%;
+    margin-top: 14vh;
+}
+
+/* CAPTION STYLE */
+.description-text {
+    color: #ddd;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+/* NAV LINKS */
+.left-content nav a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    margin: 10px 0;
+    padding: 5px 0px;
+    transition: color 0.3s;
+    font-weight: normal; 
+}
+
+.left-content nav a:hover {
+    color: #b3ff00;
+}
+
+.left-content nav a.active {
+    color: #b3ff00 !important;
+    font-weight: bold !important;
+}
+
+/* RIGHT COLUMN */
+.right-column-wrapper {
+    flex-basis: 66.66%;
+    flex-grow: 1;
+    margin-top: 0.5vh;
+    padding-top: 16vh;
+    padding-left: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.right-column-wrapper h2 {
+    margin: 0 0 8px 0;
+}
+
+#about-me p, .right-column-wrapper p {
+    color: #ddd;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.content-section {
+    padding: 32px 0;
+    scroll-margin-top: 18vh; 
+}
+
+/* TIMELINE */
+.timeline {
+    position: relative;
+    padding: 20px 0 2px 30px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #444;
+}
+
+.timeline-item-link {
+    position: relative;
+    display: block;
+    margin-bottom: 30px;
+    padding: 0 0 0 20px;
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Only highlight the Title and Dot, not the Date
+.timeline-title {
+    transition: color 0.3s ease;
+} 
+
+.timeline-item-link:hover .timeline-title {
+    color: #b3ff00; 
+}
+ */
+    
+.timeline-item-link::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 5px;
+    width: 8px;
+    height: 8px;
+    background: #b3ff00;
+    border-radius: 50%;
+    z-index: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-item-link:hover::before {
+    transform: scale(1.4);
+    box-shadow: 0 0 10px #b3ff00;
+}
+
+.timeline-date {
+    color: #ccc; 
+}
+
+/* POPUP GALLERY */
+#columnPopup {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: none; justify-content: center; align-items: center;
+  z-index: 2000;
+}
+
+/* GALLERY STYLE */
+#mediaContainer {
+    max-width: 85%; max-height: 85%;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.gallery-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #fff; font-size: 2.5em;
+  cursor: pointer; padding: 20px; z-index: 10000;
+}
+
+#prevBtn { left: 30px; }
+#nextBtn { right: 30px; }
+
+/* GALLERY GRID */
+.grid-container {
+    display: grid; /* flex; */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; max-width: 800px; 
+}
+
+.grid-container img, .grid-container video {
+    width: 100%; cursor: pointer; object-fit: cover;
+}
+
+/* POPUP */
+.lightbox {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none; /* Controlled by JS */
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    background-color: rgba(0, 0, 0, 0.9);
+    cursor: pointer;
+}
+
+#lightbox-media {
+    max-width: 90%;
+    max-height: 80vh;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* MOBILE */
+@media (max-width: 800px) {
+    /* 1. Force the container to stop stretching columns to match height */
+    body, .main-container {
+        display: block !important; 
+        height: auto !important;
+    }
+
+    .main-container {
+        width: 90%;
+    }
+
+    /* 2. Unstick */
+    .left-column {
+        position: relative !important;
+        height: auto !important;
+        width: 100%;
+        padding-right: 0;
+        top: 0;
+    }
+
+    /* 3. Replace VH margins with small, fixed pixel gaps */
+    .left-content {
+        margin-top: 30px; /* Reduced from 14vh */
+    }
+
+    #navbar {
+        /* Lays links out in a line */
+        display: flex;
+        /* Forces horizontal direction */  
+        flex-direction: row;
+        /* Allows links to wrap if screen is very narrow */
+        flex-wrap: wrap; 
+        /* Adds even spacing between links */
+        gap: 20px;             
+        margin-top: 10px;
+    }
+
+    nav a {
+        display: inline-block;
+        margin: 0 !important;
+    }
+
+    .right-column-wrapper {
+        padding-top: 20px;
+        padding-left: 0;
+        width: 100%;
+        margin-top: 0;
+    }
+
+    .content-section {
+        padding-bottom: 30px;
+        scroll-margin-top: 30px;
+    }
+
+    /* 4. Collapse the grid to a single column */
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <div class="left-column">
+    <div class="left-content">
+        <a href="LINK TO THIS WEBSITE HERE" style="color: white; text-decoration: none;"><h1>Your Name</h1></a>
+        <br>
+        <h2>Job Title Here</h2>
+        <div class="description-text">Short Job Description</div>
+
+        <nav id="navbar">
+            <a href="#about-me" class="nav-link">about &ensp;</a>
+            <a href="#works" class="nav-link">works &ensp;</a>
+            <a href="#visuals" class="nav-link">visual &ensp;</a>
+        </nav>
+    </div>
+    </div>
+
+  <div class="right-column-wrapper">
+      
+<!-- ABOUT -->    
+    <section id="about-me" class="content-section">
+      <h2>about</h2>
+      <p> 
+        Biography sentence number one goes here.
+        <br>
+        Biography sentence number two goes here.
+      </p> 
+    </section>
+
+<!-- TIMELINE -->    
+    <section id="works" class="content-section">
+      <h2>works</h2>
+        <br> 
+        <div class="timeline">
+            <a href="LINK GOES HERE" target="_blank" class="timeline-item-link">
+                <div class="timeline-date">YEAR - </div>
+                <div class="timeline-title">COMPANY NAME</div>
+                <p>The paragraph summarizing your work...</p>
+            </a>
+        
+            <a href="LINK GOES HERE" target="_blank" class="timeline-item-link">
+                <div class="timeline-date">YEAR </div>
+                <div class="timeline-title">COMPANY NAME HERE</div>
+                <p>The paragraph summarizing your work...</p>
+            </a>
+            
+            <a href="LINK GOES HERE" target="_blank" class="timeline-item-link">
+                <div class="timeline-date">YEAR </div>
+                <div class="timeline-title">COMPANY NAME HERE</div>
+                <p>The paragraph summarizing your work...</p>
+            </a>
+
+            <a href="LINK GOES HERE"  target="_blank" class="timeline-item-link">
+                <div class="timeline-date">YEAR - YEAR </div>
+                <div class="timeline-title">COMPANY NAME HERE</div>
+                <p>The paragraph summarizing your work...<B>impact.</B></p>
+            </a>
+            
+        </div>
+    </section>
+      
+<!-- GALLERY -->            
+    <section id="visuals" class="content-section" >
+        <h2>visuals</h2>
+        <br>
+        <div class="grid-container">
+            
+             <!-- IMAGE ROW --> 
+            <img src="IMAGE LINK GOES HERE" data-full-src="IMAGE LINK GOES HERE" onclick="openLightbox(this)"> 
+            <img src="IMAGE LINK GOES HERE" data-full-src="IMAGE LINK GOES HERE" onclick="openLightbox(this)"> 
+            <img src="IMAGE LINK GOES HERE" data-full-src="IMAGE LINK GOES HERE" onclick="openLightbox(this)"> 
+
+            <!-- IMAGE + VIDEO ROW -->
+            <img src="IMAGE LINK GOES HERE" data-full-src="IMAGE LINK GOES HERE" onclick="openLightbox(this)">
+           
+            <video src="VIDEO LINK GOES HERE" data-full-src="VIDEO LINK GOES HERE" 
+            poster="STILL LINK GOES HERE.png"
+            muted 
+            playsinline 
+            preload="auto"
+            onclick="openLightbox(this)" 
+            type="video/mp4">     
+            </video>  
+          
+            <img src="IMAGE LINKS GOES HERE" onclick="openLightbox(this)">
+        
+            <!-- VIDEO ROW  --> 
+            <video src="VIDEO LINK GOES HERE" data-full-src="VIDEO LINK GOES HERE" 
+            poster="STILL LINK GOES HERE"
+            muted 
+            loop 
+            playsinline 
+            preload="metadata"
+            onclick="openLightbox(this)" 
+            type="video/mov">     
+            </video> 
+
+            <img src="IMAGE LINK GOES HERE" data-full-src="IMAGE LINK GOES HERE" onclick="openLightbox(this)"> 
+
+            <video src="VIDEO LINK GOES HERE" data-full-src=" VIDEOLINK GOES HERE" 
+            poster="STILL LINK GOES HERE"
+            muted 
+            loop 
+            playsinline 
+            preload="metadata"
+            onclick="openLightbox(this)" 
+            type="video/mov">     
+            </video>    
+        </div> 
+    </section>
+
+    <div style="height: 100px;"></div>
+    <p>&ensp; &ensp; <small><i>design by: artsandtoys</i></small></p>
+    <br>
+    <p>&ensp; &ensp; <a href="#"><b><i>Fin.</i></b></a></p>
+  </div>
+</div>
+
+<div id="columnPopup">
+  <button id="prevBtn" class="gallery-btn">&#10094;</button>
+  <div id="mediaContainer"></div>
+  <button id="nextBtn" class="gallery-btn">&#10095;</button>
+</div>
+
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-image" style="max-width:90%;" src="">
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                const offset = window.innerHeight * 0.16; 
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
+        });
+    });
+
+    const popup = document.querySelector('#columnPopup');
+    const mediaContainer = document.querySelector('#mediaContainer');
+    const prevBtn = document.querySelector('#prevBtn');
+    const nextBtn = document.querySelector('#nextBtn');
+    let currentGallery = [];
+    let currentIndex = 0;
+
+    function showMedia(index) {
+        mediaContainer.innerHTML = '';
+        const src = currentGallery[index];
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '80vh';
+        mediaContainer.appendChild(img);
+        currentIndex = index;
+    }
+
+    document.querySelectorAll('.gallery-trigger').forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            currentGallery = trigger.dataset.images.split(',').map(s => s.trim());
+            showMedia(0);
+            popup.style.display = 'flex';
+        });
+    });
+
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); currentIndex = (currentIndex + 1) % currentGallery.length; showMedia(currentIndex); });
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length; showMedia(currentIndex); });
+    popup.addEventListener('click', () => { popup.style.display = 'none'; });
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+});
+
+function openLightbox(element) {
+    const lightbox = document.getElementById('lightbox');
+    const fullSrc = element.getAttribute('data-full-src');
+    
+    // Clear previous content
+    lightbox.innerHTML = ''; 
+
+    // Check if the source is a video
+    const isVideo = fullSrc.match(/\.(mov|mp4|webm|ogg)$/i);
+
+    if (isVideo) {
+        const video = document.createElement('video');
+        video.src = fullSrc;
+        video.controls = true;
+        video.autoplay = true;
+        video.style.maxWidth = "90%";
+        video.id = "lightbox-media";
+        lightbox.appendChild(video);
+    } else {
+        const img = document.createElement('img');
+        img.src = fullSrc;
+        img.style.maxWidth = "90%";
+        img.id = "lightbox-media";
+        lightbox.appendChild(img);
+    }
+
+    lightbox.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; 
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    const media = document.getElementById('lightbox-media');
+    
+    // If it's a video, stop it before closing
+    if (media && media.tagName === 'VIDEO') {
+        media.pause();
+        media.src = "";
+        media.load();
+    }
+
+    lightbox.style.display = 'none';
+    document.body.style.overflow = '';
+}
+</script>
+    
+</body>
+</html>
