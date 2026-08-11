@@ -1,2 +1,2 @@
 # portfolio-templates-free
-two portfolio templates for free
+arts and toys portfolio templates for free
